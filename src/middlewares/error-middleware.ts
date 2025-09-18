@@ -89,7 +89,8 @@ export const errorMiddleware = (
         data: errorLogs,
       })
       .then(() => logger.info("Error logs saved successfully"))
-      .catch((error) => loggedError(error, "Error saving error logs"));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .catch((error: any) => loggedError(error, "Error saving error logs"));
   }
 
   const responsePayload = cleanObject({
