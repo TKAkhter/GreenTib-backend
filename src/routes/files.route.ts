@@ -55,7 +55,7 @@ fileRegistry.registerPath({
   request: {
     params: z.object({ userId: z.string() }),
   },
-  responses: createApiResponse(FilesSchema, "Success"),
+  responses: createApiResponse(z.array(FilesSchema), "Success"),
 });
 fileRouter.get("/user/:userId", fileController.getByUser);
 

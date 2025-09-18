@@ -103,7 +103,7 @@ export const errorMiddleware = (
     }),
   });
 
-  res.json(
+  res.status(statusCode).json(
     createResponse({
       data: responsePayload,
       status: statusCode,
