@@ -31,5 +31,5 @@
     "resolveFullPaths": true
   },
   "include": ["src", "src/types", "./node_modules/@types", "@types/jest", "tests"],
-  "exclude": ["node_modules", "build"]
+  "exclude": ["node_modules", "build", "tests"]
 }
