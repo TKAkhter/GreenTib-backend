@@ -1,5 +1,8 @@
-import { z } from "zod";
-import { Prisma } from "@prisma/client";
+import { z } from 'zod';
+import { Prisma } from '@prisma/client';
+import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
+
+extendZodWithOpenApi(z);
 
 /////////////////////////////////////////
 // HELPER FUNCTIONS
@@ -8,21 +11,11 @@ import { Prisma } from "@prisma/client";
 // JSON
 //------------------------------------------------------
 
-export type NullableJsonInput =
-  | Prisma.JsonValue
-  | null
-  | "JsonNull"
-  | "DbNull"
-  | Prisma.NullTypes.DbNull
-  | Prisma.NullTypes.JsonNull;
+export type NullableJsonInput = Prisma.JsonValue | null | 'JsonNull' | 'DbNull' | Prisma.NullTypes.DbNull | Prisma.NullTypes.JsonNull;
 
 export const transformJsonNull = (v?: NullableJsonInput) => {
-  if (!v || v === "DbNull") {
-    return Prisma.DbNull;
-  }
-  if (v === "JsonNull") {
-    return Prisma.JsonNull;
-  }
+  if (!v || v === 'DbNull') return Prisma.DbNull;
+  if (v === 'JsonNull') return Prisma.JsonNull;
   return v;
 };
 
@@ -34,15 +27,16 @@ export const JsonValueSchema: z.ZodType<Prisma.JsonValue> = z.lazy(() =>
     z.literal(null),
     z.record(z.lazy(() => JsonValueSchema.optional())),
     z.array(z.lazy(() => JsonValueSchema)),
-  ]),
-);
+  ])
+).openapi({ type: "object", description: "JSON value" });
 
 export type JsonValueType = z.infer<typeof JsonValueSchema>;
 
 export const NullableJsonValue = z
-  .union([JsonValueSchema, z.literal("DbNull"), z.literal("JsonNull")])
+  .union([JsonValueSchema, z.literal('DbNull'), z.literal('JsonNull')])
   .nullable()
-  .transform((v) => transformJsonNull(v));
+  .transform((v) => transformJsonNull(v))
+  .openapi({ type: "object", description: "JSON value" });
 
 export type NullableJsonValueType = z.infer<typeof NullableJsonValue>;
 
@@ -54,66 +48,54 @@ export const InputJsonValueSchema: z.ZodType<Prisma.InputJsonValue> = z.lazy(() 
     z.object({ toJSON: z.function(z.tuple([]), z.any()) }),
     z.record(z.lazy(() => z.union([InputJsonValueSchema, z.literal(null)]))),
     z.array(z.lazy(() => z.union([InputJsonValueSchema, z.literal(null)]))),
-  ]),
+  ])
 );
 
 export type InputJsonValueType = z.infer<typeof InputJsonValueSchema>;
+
 
 /////////////////////////////////////////
 // ENUMS
 /////////////////////////////////////////
 
-export const UsersScalarFieldEnumSchema = z.enum([
-  "id",
-  "email",
-  "password",
-  "roleId",
-  "tenantId",
-  "name",
-  "phoneNumber",
-  "bio",
-  "resetToken",
-  "deletedAt",
-  "createdAt",
-  "updatedAt",
-]);
+export const ErrorLogsScalarFieldEnumSchema = z.enum(['id','status','message','method','url','loggedUser','name','stack','details','createdAt','updatedAt']);
 
-export const TenantsScalarFieldEnumSchema = z.enum(["id", "name", "createdAt", "updatedAt"]);
+export const UsersScalarFieldEnumSchema = z.enum(['id','email','password','roleId','tenantId','name','phoneNumber','bio','resetToken','deletedAt','createdAt','updatedAt']);
 
-export const RolesScalarFieldEnumSchema = z.enum(["id", "name", "createdAt", "updatedAt"]);
+export const TenantsScalarFieldEnumSchema = z.enum(['id','name','createdAt','updatedAt']);
 
-export const FilesScalarFieldEnumSchema = z.enum([
-  "id",
-  "userId",
-  "name",
-  "path",
-  "text",
-  "tags",
-  "views",
-  "createdAt",
-  "updatedAt",
-]);
+export const RolesScalarFieldEnumSchema = z.enum(['id','name','createdAt','updatedAt']);
 
-export const ErrorLogsScalarFieldEnumSchema = z.enum([
-  "id",
-  "status",
-  "message",
-  "method",
-  "url",
-  "loggedUser",
-  "name",
-  "stack",
-  "details",
-  "createdAt",
-  "updatedAt",
-]);
+export const FilesScalarFieldEnumSchema = z.enum(['id','userId','name','path','text','tags','views','createdAt','updatedAt']);
 
-export const SortOrderSchema = z.enum(["asc", "desc"]);
+export const ConversationsScalarFieldEnumSchema = z.enum(['id','userId','category','answers','notes','createdAt','updatedAt']);
 
-export const QueryModeSchema = z.enum(["default", "insensitive"]);
+export const SortOrderSchema = z.enum(['asc','desc']);
+
+export const QueryModeSchema = z.enum(['default','insensitive']);
 /////////////////////////////////////////
 // MODELS
 /////////////////////////////////////////
+
+/////////////////////////////////////////
+// ERROR LOGS SCHEMA
+/////////////////////////////////////////
+
+export const ErrorLogsSchema = z.object({
+  id: z.string(),
+  status: z.string().nullable(),
+  message: z.string().nullable(),
+  method: z.string().nullable(),
+  url: z.string().nullable(),
+  loggedUser: z.string().nullable(),
+  name: z.string().nullable(),
+  stack: z.string().nullable(),
+  details: JsonValueSchema.nullable(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+})
+
+export type ErrorLogs = z.infer<typeof ErrorLogsSchema>
 
 /////////////////////////////////////////
 // USERS SCHEMA
@@ -132,9 +114,9 @@ export const UsersSchema = z.object({
   deletedAt: z.date().nullable(),
   createdAt: z.date(),
   updatedAt: z.date(),
-});
+})
 
-export type Users = z.infer<typeof UsersSchema>;
+export type Users = z.infer<typeof UsersSchema>
 
 /////////////////////////////////////////
 // TENANTS SCHEMA
@@ -145,9 +127,9 @@ export const TenantsSchema = z.object({
   name: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
-});
+})
 
-export type Tenants = z.infer<typeof TenantsSchema>;
+export type Tenants = z.infer<typeof TenantsSchema>
 
 /////////////////////////////////////////
 // ROLES SCHEMA
@@ -158,9 +140,9 @@ export const RolesSchema = z.object({
   name: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
-});
+})
 
-export type Roles = z.infer<typeof RolesSchema>;
+export type Roles = z.infer<typeof RolesSchema>
 
 /////////////////////////////////////////
 // FILES SCHEMA
@@ -176,26 +158,41 @@ export const FilesSchema = z.object({
   views: z.number().nullable(),
   createdAt: z.date(),
   updatedAt: z.date(),
-});
+})
 
-export type Files = z.infer<typeof FilesSchema>;
+export type Files = z.infer<typeof FilesSchema>
 
 /////////////////////////////////////////
-// ERROR LOGS SCHEMA
+// COMPOSITE TYPES
+/////////////////////////////////////////
+// MESSAGE
+//------------------------------------------------------
+
+
+/////////////////////////////////////////
+// MESSAGE SCHEMA
 /////////////////////////////////////////
 
-export const ErrorLogsSchema = z.object({
+export const MessageSchema = z.object({
+  role: z.string(),
+  content: z.string(),
+})
+
+export type Message = z.infer<typeof MessageSchema>
+
+/////////////////////////////////////////
+// CONVERSATIONS SCHEMA
+/////////////////////////////////////////
+
+export const ConversationsSchema = z.object({
   id: z.string(),
-  status: z.string().nullable(),
-  message: z.string().nullable(),
-  method: z.string().nullable(),
-  url: z.string().nullable(),
-  loggedUser: z.string().nullable(),
-  name: z.string().nullable(),
-  stack: z.string().nullable(),
-  details: JsonValueSchema.nullable(),
+  userId: z.string(),
+  category: z.string().nullable(),
+  answers: JsonValueSchema.nullable(),
+  notes: JsonValueSchema.nullable(),
   createdAt: z.date(),
   updatedAt: z.date(),
-});
+  messages: z.array(MessageSchema).optional(),
+})
 
-export type ErrorLogs = z.infer<typeof ErrorLogsSchema>;
+export type Conversations = z.infer<typeof ConversationsSchema>

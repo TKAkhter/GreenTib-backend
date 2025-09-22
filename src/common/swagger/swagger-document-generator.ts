@@ -4,9 +4,10 @@ import { healthRegistry } from "@/routes/health.route";
 import { authRegistry } from "@/routes/auth.route";
 import { userRegistry } from "@/routes/users.route";
 import { fileRegistry } from "@/routes/files.route";
+import { conversationsRegistry } from "@/routes/conversations.route";
 
 export function generateOpenAPIDocument() {
-  const registry = new OpenAPIRegistry([healthRegistry, authRegistry, userRegistry, fileRegistry]);
+  const registry = new OpenAPIRegistry([healthRegistry, authRegistry, userRegistry, fileRegistry, conversationsRegistry]);
 
   registry.registerComponent("securitySchemes", "bearerAuth", {
     type: "http",

@@ -26,22 +26,39 @@ datasource db {
   url      = env("DATABASE_URI")
 }
 
+model ErrorLogs {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  status     String?
+  message    String?
+  method     String?
+  url        String?
+  loggedUser String?
+  name       String?
+  stack      String?
+  details    Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("error_logs")
+}
+
 model Users {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  email       String    @unique
-  password    String
-  role        Roles     @relation(fields: [roleId], references: [id])
-  roleId      String    @db.ObjectId
-  tenant      Tenants   @relation(fields: [tenantId], references: [id])
-  tenantId    String    @db.ObjectId
-  name        String?
-  phoneNumber String?
-  bio         String?
-  resetToken  String?
-  deletedAt   DateTime?
-  files       Files[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  email         String          @unique
+  password      String
+  role          Roles           @relation(fields: [roleId], references: [id])
+  roleId        String          @db.ObjectId
+  tenant        Tenants         @relation(fields: [tenantId], references: [id])
+  tenantId      String          @db.ObjectId
+  name          String?
+  phoneNumber   String?
+  bio           String?
+  resetToken    String?
+  deletedAt     DateTime?
+  files         Files[]
+  conversations Conversations[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 
   @@map("users")
 }
@@ -68,8 +85,8 @@ model Roles {
 
 model Files {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  user      Users   @relation(fields: [userId], references: [id])
-  userId    String  @db.ObjectId
+  user      Users    @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
   name      String?
   path      String?
   text      String?
@@ -81,18 +98,21 @@ model Files {
   @@map("files")
 }
 
-model ErrorLogs {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  status     String?
-  message    String?
-  method     String?
-  url        String?
-  loggedUser String?
-  name       String?
-  stack      String?
-  details    Json?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+model Conversations {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      Users    @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+  category  String?
+  answers   Json?
+  notes     Json?
+  messages  Message[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  @@map("error_logs")
+  @@map("conversations")
+}
+
+type Message {
+  role    String
+  content String
 }

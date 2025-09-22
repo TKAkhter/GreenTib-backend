@@ -7,4 +7,5 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
 export const COLLECTION_NAMES = {
   users: "Users",
   files: "Files",
+  conversations: "Conversations",
 };
