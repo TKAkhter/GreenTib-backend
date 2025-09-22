@@ -5,7 +5,7 @@
   "main": "build/src/server.js",
   "scripts": {
     "clean": "rimraf build/",
-    "build": "npm run clean && tsc && tsc-alias",
+    "build": "tsc && tsc-alias",
     "start": "node --optimize_for_size build/src/server.js",
     "dev": "nodemon -exec --config nodemon.json 'ts-node' src/server.ts",
     "test": "jest",
