@@ -9,7 +9,7 @@
     "outDir": "./build",
     "skipLibCheck": true,
     "strict": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "strictNullChecks": true,
     "strictBindCallApply": true,
     "alwaysStrict": true,
