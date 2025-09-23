@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "clean": "rimraf dist/",
-    "build": "tsc && tsc-alias",
+    "build": "npm run prisma:gen && tsc && tsc-alias",
     "start": "node dist/server.js",
     "dev": "nodemon --config nodemon.json",
     "test": "jest",

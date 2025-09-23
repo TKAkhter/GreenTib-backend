@@ -1,8 +1,12 @@
-import { ConversationsSchema } from "@/generated/zod";
+import { ConversationsSchema, MessageSchema } from "@/generated/zod";
 import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
 import { z } from "zod";
 
 extendZodWithOpenApi(z);
+
+export const ExtendConversationsSchema = ConversationsSchema.extend({
+  messages: z.array(MessageSchema).optional(),
+});
 
 export const createConversationsSchema = ConversationsSchema.omit({
   id: true,

@@ -141,6 +141,22 @@ export const FilesSchema = z.object({
 export type Files = z.infer<typeof FilesSchema>
 
 /////////////////////////////////////////
+// CONVERSATIONS SCHEMA
+/////////////////////////////////////////
+
+export const ConversationsSchema = z.object({
+  id: z.string(),
+  userId: z.string(),
+  category: z.string().nullable(),
+  answers: JsonValueSchema.nullable(),
+  notes: JsonValueSchema.nullable(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+})
+
+export type Conversations = z.infer<typeof ConversationsSchema>
+
+/////////////////////////////////////////
 // COMPOSITE TYPES
 /////////////////////////////////////////
 // MESSAGE
@@ -157,20 +173,3 @@ export const MessageSchema = z.object({
 })
 
 export type Message = z.infer<typeof MessageSchema>
-
-/////////////////////////////////////////
-// CONVERSATIONS SCHEMA
-/////////////////////////////////////////
-
-export const ConversationsSchema = z.object({
-  id: z.string(),
-  userId: z.string(),
-  category: z.string().nullable(),
-  answers: JsonValueSchema.nullable(),
-  notes: JsonValueSchema.nullable(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-  messages: z.array(MessageSchema).optional(),
-})
-
-export type Conversations = z.infer<typeof ConversationsSchema>

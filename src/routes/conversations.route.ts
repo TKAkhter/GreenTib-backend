@@ -8,10 +8,9 @@ import { findByQuerySchema } from "@/schemas/find-by-query";
 import { Router } from "express";
 import { importFileSchema } from "@/schemas/import-file";
 import { uploadImportMiddleware } from "@/common/multer/multer";
-import { ConversationsSchema } from "@/generated/zod";
 import { COLLECTION_NAMES } from "@/constants";
 import { ConversationsController } from "@/controllers/conversations.controller";
-import { createConversationsSchema, updateConversationsSchema } from "@/schemas/conversations.dto";
+import { ExtendConversationsSchema, createConversationsSchema, updateConversationsSchema } from "@/schemas/conversations.dto";
 
 const conversationsRouter = Router();
 conversationsRouter.use(authMiddleware);
@@ -22,14 +21,14 @@ const ROUTE = `/${TAG.toLowerCase()}`;
 export const conversationsRegistry = new OpenAPIRegistry();
 const conversationsController = new ConversationsController();
 
-conversationsRegistry.register(TAG, ConversationsSchema);
+conversationsRegistry.register(TAG, ExtendConversationsSchema);
 
 conversationsRegistry.registerPath({
     method: "get",
     path: ROUTE,
     summary: `Get all ${TAG}`,
     tags: [TAG],
-    responses: createApiResponse(z.array(ConversationsSchema), "Success"),
+    responses: createApiResponse(z.array(ExtendConversationsSchema), "Success"),
 });
 conversationsRouter.get("/", conversationsController.getAll);
 
@@ -70,7 +69,7 @@ conversationsRegistry.registerPath({
     request: {
         params: z.object({ id: z.string() }),
     },
-    responses: createApiResponse(ConversationsSchema, "Success"),
+    responses: createApiResponse(ExtendConversationsSchema, "Success"),
 });
 conversationsRouter.get("/:id", conversationsController.getById);
 
@@ -84,7 +83,7 @@ conversationsRegistry.registerPath({
     request: {
         params: z.object({ userId: z.string() }),
     },
-    responses: createApiResponse(z.array(ConversationsSchema), "Success"),
+    responses: createApiResponse(z.array(ExtendConversationsSchema), "Success"),
 });
 conversationsRouter.get("/user/:userId", conversationsController.getByUser);
 
@@ -133,7 +132,7 @@ conversationsRegistry.registerPath({
             content: { "application/json": { schema: updateConversationsSchema } },
         },
     },
-    responses: createApiResponse(ConversationsSchema, `${TAG} Updated Successfully`),
+    responses: createApiResponse(ExtendConversationsSchema, `${TAG} Updated Successfully`),
 });
 conversationsRouter.put("/:id", zodValidation(updateConversationsSchema), conversationsController.update);
 
