@@ -20,18 +20,19 @@ export const transformJsonNull = (v?: NullableJsonInput) => {
   return v;
 };
 
-export const JsonValueSchema: z.ZodType<Prisma.JsonValue> = z.any();
+export const JsonValueSchema: z.ZodType<Prisma.JsonValue> = z.any().openapi({ type: 'object' });
 
 export type JsonValueType = z.infer<typeof JsonValueSchema>;
 
 export const NullableJsonValue = z
   .union([JsonValueSchema, z.literal('DbNull'), z.literal('JsonNull')])
   .nullable()
-  .transform((v) => transformJsonNull(v));
+  .transform((v) => transformJsonNull(v))
+  .openapi({ type: 'object' });
 
 export type NullableJsonValueType = z.infer<typeof NullableJsonValue>;
 
-export const InputJsonValueSchema: z.ZodType<Prisma.InputJsonValue> = z.any();
+export const InputJsonValueSchema: z.ZodType<Prisma.InputJsonValue> = z.any().openapi({ type: 'object' });
 
 export type InputJsonValueType = z.infer<typeof InputJsonValueSchema>;
 
