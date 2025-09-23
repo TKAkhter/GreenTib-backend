@@ -11,22 +11,30 @@ extendZodWithOpenApi(z);
 // JSON
 //------------------------------------------------------
 
-export type NullableJsonInput = Prisma.JsonValue | null | 'JsonNull' | 'DbNull' | Prisma.NullTypes.DbNull | Prisma.NullTypes.JsonNull;
+export type NullableJsonInput =
+  | Prisma.JsonValue
+  | null
+  | "JsonNull"
+  | "DbNull"
+  | Prisma.NullTypes.DbNull
+  | Prisma.NullTypes.JsonNull;
 
 export const transformJsonNull = (v?: NullableJsonInput) => {
-  if (!v || v === 'DbNull') return Prisma.DbNull;
-  if (v === 'JsonNull') return Prisma.JsonNull;
+  if (!v || v === "DbNull") return Prisma.DbNull;
+  if (v === "JsonNull") return Prisma.JsonNull;
   return v;
 };
 
+// Recursive JSON schema for runtime, but collapsed for OpenAPI
 export const JsonValueSchema: z.ZodType<Prisma.JsonValue> = z.lazy(() =>
   z.union([
     z.string(),
     z.number(),
     z.boolean(),
     z.literal(null),
-    z.record(z.lazy(() => JsonValueSchema.optional())),
-    z.array(z.lazy(() => JsonValueSchema)),
+    // collapse recursion for OpenAPI
+    z.record(z.any()),
+    z.array(z.any()),
   ])
 ).openapi({ type: "object", description: "JSON value" });
 
@@ -40,16 +48,17 @@ export const NullableJsonValue = z
 
 export type NullableJsonValueType = z.infer<typeof NullableJsonValue>;
 
-export const InputJsonValueSchema: z.ZodType<Prisma.InputJsonValue> = z.lazy(() =>
-  z.union([
-    z.string(),
-    z.number(),
-    z.boolean(),
-    z.object({ toJSON: z.function(z.tuple([]), z.any()) }),
-    z.record(z.lazy(() => z.union([InputJsonValueSchema, z.literal(null)]))),
-    z.array(z.lazy(() => z.union([InputJsonValueSchema, z.literal(null)]))),
-  ])
-);
+export const InputJsonValueSchema: z.ZodType<Prisma.InputJsonValue> = z.lazy(
+  () =>
+    z.union([
+      z.string(),
+      z.number(),
+      z.boolean(),
+      z.object({ toJSON: z.function(z.tuple([]), z.any()) }),
+      z.record(z.any()),
+      z.array(z.any()),
+    ])
+).openapi({ type: "object", description: "JSON value" });
 
 export type InputJsonValueType = z.infer<typeof InputJsonValueSchema>;
 
@@ -58,21 +67,21 @@ export type InputJsonValueType = z.infer<typeof InputJsonValueSchema>;
 // ENUMS
 /////////////////////////////////////////
 
-export const ErrorLogsScalarFieldEnumSchema = z.enum(['id','status','message','method','url','loggedUser','name','stack','details','createdAt','updatedAt']);
+export const ErrorLogsScalarFieldEnumSchema = z.enum(['id', 'status', 'message', 'method', 'url', 'loggedUser', 'name', 'stack', 'details', 'createdAt', 'updatedAt']);
 
-export const UsersScalarFieldEnumSchema = z.enum(['id','email','password','roleId','tenantId','name','phoneNumber','bio','resetToken','deletedAt','createdAt','updatedAt']);
+export const UsersScalarFieldEnumSchema = z.enum(['id', 'email', 'password', 'roleId', 'tenantId', 'name', 'phoneNumber', 'bio', 'resetToken', 'deletedAt', 'createdAt', 'updatedAt']);
 
-export const TenantsScalarFieldEnumSchema = z.enum(['id','name','createdAt','updatedAt']);
+export const TenantsScalarFieldEnumSchema = z.enum(['id', 'name', 'createdAt', 'updatedAt']);
 
-export const RolesScalarFieldEnumSchema = z.enum(['id','name','createdAt','updatedAt']);
+export const RolesScalarFieldEnumSchema = z.enum(['id', 'name', 'createdAt', 'updatedAt']);
 
-export const FilesScalarFieldEnumSchema = z.enum(['id','userId','name','path','text','tags','views','createdAt','updatedAt']);
+export const FilesScalarFieldEnumSchema = z.enum(['id', 'userId', 'name', 'path', 'text', 'tags', 'views', 'createdAt', 'updatedAt']);
 
-export const ConversationsScalarFieldEnumSchema = z.enum(['id','userId','category','answers','notes','createdAt','updatedAt']);
+export const ConversationsScalarFieldEnumSchema = z.enum(['id', 'userId', 'category', 'answers', 'notes', 'createdAt', 'updatedAt']);
 
-export const SortOrderSchema = z.enum(['asc','desc']);
+export const SortOrderSchema = z.enum(['asc', 'desc']);
 
-export const QueryModeSchema = z.enum(['default','insensitive']);
+export const QueryModeSchema = z.enum(['default', 'insensitive']);
 /////////////////////////////////////////
 // MODELS
 /////////////////////////////////////////
