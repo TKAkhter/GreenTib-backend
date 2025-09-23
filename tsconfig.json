@@ -6,7 +6,7 @@
     "declaration": true,
     "sourceMap": true,
     "removeComments": true,
-    "outDir": "./build",
+    "outDir": "./dist",
     "skipLibCheck": true,
     "strict": true,
     "noImplicitAny": false,
@@ -31,5 +31,5 @@
     "resolveFullPaths": true
   },
   "include": ["src", "src/types", "./node_modules/@types", "@types/jest", "tests"],
-  "exclude": ["node_modules", "build", "tests"]
+  "exclude": ["node_modules", "build", "tests", "dist"]
 }
