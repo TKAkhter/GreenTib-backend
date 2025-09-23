@@ -15,7 +15,7 @@ export const zodValidation =
         next();
       }
     } catch (error) {
-      const errorMessage = `Validation Error: ${(error as ZodError).errors.map((e) => e.message).join(", ")}`;
+      const errorMessage = `Validation Error: ${(error as ZodError).issues.map((e) => e.message).join(", ")}`;
       loggedError(error, errorMessage);
       return res.status(StatusCodes.BAD_REQUEST).json(
         createResponse({

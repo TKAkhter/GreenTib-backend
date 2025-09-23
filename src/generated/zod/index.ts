@@ -1,5 +1,9 @@
 import { z } from 'zod';
 import { Prisma } from '@prisma/client';
+import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
+
+
+extendZodWithOpenApi(z);
 
 /////////////////////////////////////////
 // HELPER FUNCTIONS

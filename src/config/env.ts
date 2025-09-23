@@ -22,7 +22,7 @@ const envSchema = z.object({
   GENERATED_PASSWORD_LENGTH: z
     .string()
     .transform((val) => parseInt(val, 10))
-    .default("10"),
+    .default(10),
 
   // -- Redis --
   REDIS_URL: z.string(),
@@ -34,7 +34,7 @@ const envSchema = z.object({
   ENABLE_WINSTON: z
     .string()
     .transform((val) => val === "true")
-    .default("false"),
+    .default(false),
   LOGS_TYPE: z.enum(["mongodb", "directory"]).default("mongodb"),
   MONGODB_ERROR_COLLECTION_NAME: z.string(),
 
