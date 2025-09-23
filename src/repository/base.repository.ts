@@ -255,8 +255,8 @@ export class BaseRepository<T, TCreateDto, TUpdateDto> {
         `[${this.collectionName} Repository] Importing ${entities.length} documents into ${this.collectionName}`,
       );
 
-      const uniqueEntities = [];
-      const skippedEntities = [];
+      const uniqueEntities: TCreateDto[] = [];
+      const skippedEntities: TCreateDto[] = [];
       let createdEntities = [];
 
       for (const entity of entities) {
@@ -282,14 +282,14 @@ export class BaseRepository<T, TCreateDto, TUpdateDto> {
 
       logger.info(`[${this.collectionName} Repository] Import Summary:`, {
         createdEntities: uniqueEntities,
-        createdCount: createdEntities.count ?? createdEntities.length,
+        createdCount: createdEntities.length,
         skippedCount: skippedEntities.length,
       });
 
       return {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         createdEntities: uniqueEntities as any,
-        createdCount: createdEntities.count ?? createdEntities.length,
+        createdCount: createdEntities.length,
         skippedCount: skippedEntities.length,
       };
     } catch (error) {
