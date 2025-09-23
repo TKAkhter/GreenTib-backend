@@ -1,9 +1,5 @@
 import { z } from 'zod';
 import { Prisma } from '@prisma/client';
-import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
-
-
-extendZodWithOpenApi(z);
 
 /////////////////////////////////////////
 // HELPER FUNCTIONS
@@ -20,19 +16,18 @@ export const transformJsonNull = (v?: NullableJsonInput) => {
   return v;
 };
 
-export const JsonValueSchema: z.ZodType<Prisma.JsonValue> = z.any().openapi({ type: 'object' });
+export const JsonValueSchema: z.ZodType<Prisma.JsonValue> = z.any();
 
 export type JsonValueType = z.infer<typeof JsonValueSchema>;
 
 export const NullableJsonValue = z
   .union([JsonValueSchema, z.literal('DbNull'), z.literal('JsonNull')])
   .nullable()
-  .transform((v) => transformJsonNull(v))
-  .openapi({ type: 'object' });
+  .transform((v) => transformJsonNull(v));
 
 export type NullableJsonValueType = z.infer<typeof NullableJsonValue>;
 
-export const InputJsonValueSchema: z.ZodType<Prisma.InputJsonValue> = z.any().openapi({ type: 'object' });
+export const InputJsonValueSchema: z.ZodType<Prisma.InputJsonValue> = z.any();
 
 export type InputJsonValueType = z.infer<typeof InputJsonValueSchema>;
 
