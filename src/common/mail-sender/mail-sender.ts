@@ -2,16 +2,23 @@ import { env } from "@/config/env";
 import formData from "form-data";
 import Mailgun from "mailgun.js";
 
-const mailgun = new Mailgun(formData);
+let mg: ReturnType<Mailgun["client"]>["messages"] | null = null;
 
-const options = {
-  auth: {
-    api_key: env.MAILGUN_API_KEY as string,
-    domain: env.MAILGUN_DOMAIN as string,
-  },
-};
+if (env.MAILGUN_API_KEY && env.MAILGUN_DOMAIN) {
+  const mailgun = new Mailgun(formData);
 
-const mg = mailgun.client({ username: "api", key: options.auth.api_key }).messages;
+  mg = mailgun.client({
+    username: "api",
+    key: env.MAILGUN_API_KEY,
+  }).messages;
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const sendMail = async (mail: any) => mg.create(options.auth.domain, mail);
+export const sendMail = async (mail: any) => {
+  if (!mg || !env.MAILGUN_DOMAIN) {
+    console.warn("Mailgun not initialized, skipping sendMail");
+    return;
+  }
+
+  return mg.create(env.MAILGUN_DOMAIN, mail);
+};
